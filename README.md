@@ -1,7 +1,10 @@
 # Monitoring and Alerting using Prometheus and Grafana
 Monitoring workloads using Prometheus and Grafana.
+
 **Prometheus** is open source system designed for monitoring and alerting functionality for cloud environments, including kubernetes.
+
 **Grafana** is open source platform for analytics and interactive visualization web app.
+
 Prometheus collects metrics, allowing time series data aggregation and provides queryng language (PromQL) while Grafana tranforms the metrics obtained into meaningful visualization.
 
 Prometheus ecosystem consists of:
@@ -15,7 +18,9 @@ Prometheus ecosystem consists of:
 Courtesy of [Prometheus Docs](https://prometheus.io/docs/introduction/overview/)
 
 Targets can be server, application, database etc and metrics can be cpu status, units, IOPS, memory usage etc.
+
 Prometheus has its own /metrics endpoint
+
 **Prometheus operator** manages all prometheus components while **prometheus federation** scrapes data from other prometheus server.
 
 ## Alerting Overview
@@ -28,6 +33,44 @@ Main steps of setting up Grafana include:
 - Configure prometheus to talk to alertmanager
 - Create alerting rules in prometheus
 
+
+## Setting up Prometheus and Grafana
+
+### Deploy microservice in EKS
+```
+eksctl create cluster
+kubectl create namespace online-shop
+kubectl apply -f config-microservices.yaml
+```
+
+### Deploying Prometheus Operator Stack
+```
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+kubectl create namespace monitoring
+helm install monitoring prometheus-community/kube-prometheus-stack -n monitoring
+helm ls
+```
+
+### Check Prometheus Stack Pods
+```
+kubectl get all -n monitoring
+```
+
+
+### Access Prometheus UI
+```
+kubectl port-forward svc/monitoring-kube-prometheus-prometheus 9090:9090 -n monitoring &
+```
+
+### Access Grafana UI
+```
+kubectl port-forward svc/monitoring-grafana 8080:80 -n monitoring &
+```
+
+Defaults
+Username: admin
+Password: prom-operator
 
 
 
